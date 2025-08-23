@@ -1,0 +1,31 @@
+server:
+  shutdown: GRACEFUL
+  tomcat:
+    connection-timeout: 5s
+    keep-alive-timeout: 15s
+    accept-count: 100
+    threads:
+      max: 200
+      min-spare: 5
+
+
+spring:
+  application:
+    name: spring-four
+  threads:
+    virtual:
+      enabled: true
+  flyway:
+    locations:
+      - db/migration
+  datasource:
+    username: root
+    password: root
+    url: jdbc:postgresql://localhost:5432/postgres
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
