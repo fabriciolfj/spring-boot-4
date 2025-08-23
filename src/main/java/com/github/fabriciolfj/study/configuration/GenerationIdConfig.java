@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.relational.core.mapping.event.BeforeConvertCallback;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 @Configuration
 @RequiredArgsConstructor
@@ -18,12 +18,11 @@ public class GenerationIdConfig extends AbstractJdbcConfiguration {
     @Bean
     BeforeConvertCallback<Employee> idGeneration() {
         return new BeforeConvertCallback<>() {
-            AtomicLong counter = new AtomicLong();
 
             @Override
             public Employee onBeforeConvert(Employee employee) {
                 if (employee.getId() == null) {
-                    employee.setId(new EmployeeId(Organization.RND, counter.addAndGet(1)));
+                    employee.setId(new EmployeeId(Organization.RND, UUID.randomUUID().toString()));
                 }
                 return employee;
             }
