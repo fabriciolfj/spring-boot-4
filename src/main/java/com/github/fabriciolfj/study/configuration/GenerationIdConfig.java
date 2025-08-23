@@ -17,15 +17,11 @@ public class GenerationIdConfig extends AbstractJdbcConfiguration {
 
     @Bean
     BeforeConvertCallback<Employee> idGeneration() {
-        return new BeforeConvertCallback<>() {
-
-            @Override
-            public Employee onBeforeConvert(Employee employee) {
-                if (employee.getId() == null) {
-                    employee.setId(new EmployeeId(Organization.RND, UUID.randomUUID().toString()));
-                }
-                return employee;
+        return employee -> {
+            if (employee.getId() == null) {
+                employee.setId(new EmployeeId(Organization.RND, UUID.randomUUID().toString()));
             }
+            return employee;
         };
     }
 }
