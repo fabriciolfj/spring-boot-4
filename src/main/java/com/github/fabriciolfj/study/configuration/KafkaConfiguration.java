@@ -89,8 +89,8 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
-        KafkaTemplate<String, String> t = new KafkaTemplate<>(producerFactory);
+    public KafkaTemplate<String, Object> kafkaTemplate() {
+        KafkaTemplate<String, Object> t = new KafkaTemplate<>(producerFactory());
         t.setObservationEnabled(true);
         t.setObservationConvention(new KafkaTemplateObservationConvention() {
             @Override

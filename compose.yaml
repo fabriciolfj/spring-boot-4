@@ -69,7 +69,6 @@ services:
   broker:
     image: confluentinc/cp-kafka:7.5.1
     hostname: broker
-    container_name: broker
     ports:
       - "9092:9092"
     environment:
@@ -92,7 +91,6 @@ services:
   schema-registry:
     image: confluentinc/cp-schema-registry:7.5.1
     hostname: schema-registry
-    container_name: schema-registry
     depends_on:
       - broker
     ports:
