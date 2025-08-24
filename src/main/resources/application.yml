@@ -10,6 +10,33 @@ server:
 
 
 spring:
+  kafka:
+    bootstrap-servers:
+      - localhost:29092
+      - localhost:29093
+      - localhost:29094
+    properties:
+      schema:
+        registry:
+          url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        auto.register.schemas: true
+        use.latest.version: true
+        # Configurações de performance
+        batch.size: 16384
+        linger.ms: 5
+        buffer.memory: 33554432
+    consumer:
+      group-id: ${spring.application.name}
+      auto-offset-reset: earliest
+      properties:
+        specific.avro.reader: true
+        # Configurações de performance
+        fetch.min.bytes: 1024
+        max.poll.records: 500
   application:
     name: spring-four
   threads:

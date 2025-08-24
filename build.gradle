@@ -2,14 +2,34 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.0.0-SNAPSHOT'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
 }
 
 group = 'com.github.fabriciolfj'
 version = '0.0.1-SNAPSHOT'
 
+ext {
+	confluentVersion = '7.7.0'
+	avroVersion = '1.11.3'
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(24)
+	}
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs += ['build/generated-main-avro-java']
+		}
+	}
+}
+
+configurations.all {
+	resolutionStrategy {
+		force "org.apache.avro:avro:${avroVersion}"
 	}
 }
 
@@ -21,12 +41,22 @@ configurations {
 
 repositories {
 	mavenCentral()
+	gradlePluginPortal()
 	maven { url = 'https://repo.spring.io/snapshot' }
+	maven {
+		url 'https://maven.wso2.org/nexus/content/repositories/releases/'
+	}
+
+	maven {
+		url 'https://packages.confluent.io/maven/'
+	}
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'org.apache.kafka:kafka-streams'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-flyway'
@@ -37,11 +67,15 @@ dependencies {
 	implementation 'org.springframework.amqp:spring-rabbit-stream'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation "io.confluent:kafka-avro-serializer:${confluentVersion}"
+	implementation "io.confluent:kafka-schema-registry-client:${confluentVersion}"
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -50,3 +84,26 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.named('bootBuildImage') {
+	runImage = 'paketobuildpacks/ubuntu-noble-run-base:latest'
+}
+
+
+// Configuração do plugin Avro
+avro {
+	createSetters = true
+	createOptionalGetters = false
+	gettersReturnOptional = false
+	optionalGettersForNullableFieldsOnly = false
+	fieldVisibility = "PUBLIC_DEPRECATED"
+	outputCharacterEncoding = "UTF-8"
+	stringType = "String"
+}
+
+// Geração de classes Avro
+generateAvroJava {
+	source 'src/main/avro'
+}
+
+compileJava.dependsOn generateAvroJava
