@@ -46,7 +46,6 @@ public class KafkaConfiguration {
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-        configProps.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, DefaultPartitioner.class);
 
         configProps.put("schema.registry.url", schemaRegistryUrl);
         configProps.put("auto.register.schemas", true);
