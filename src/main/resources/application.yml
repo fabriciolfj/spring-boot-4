@@ -1,4 +1,5 @@
 server:
+  port: 9090
   shutdown: GRACEFUL
   tomcat:
     connection-timeout: 5s
@@ -8,9 +9,10 @@ server:
       max: 200
       min-spare: 5
 
-
 spring:
   kafka:
+    streams:
+      application-id: study
     bootstrap-servers:
       - localhost:29092
       - localhost:29093
@@ -32,8 +34,11 @@ spring:
     consumer:
       group-id: ${spring.application.name}
       auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       properties:
         specific.avro.reader: true
+        schema.registry.url: http://localhost:8081
         # Configurações de performance
         fetch.min.bytes: 1024
         max.poll.records: 500
@@ -56,3 +61,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+topic:
+  product: product-topic
+  price: table-price-topic

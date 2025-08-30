@@ -1,0 +1,33 @@
+{
+  "type": "record",
+  "name": "TabelaPreco",
+  "namespace": "com.study.preco",
+  "fields": [
+    {
+      "name": "idProduto",
+      "type": "long",
+      "doc": "Identificador do produto referenciado"
+    },
+    {
+      "name": "margem",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 5,
+        "scale": 4
+      },
+      "doc": "Margem de lucro em formato decimal (ex: 0.2500 para 25%)"
+    },
+    {
+      "name": "preco",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
+      },
+      "doc": "Preço final do produto em formato decimal"
+    }
+  ],
+  "doc": "Esquema para representar a tabela de preços"
+}

@@ -19,16 +19,22 @@ import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.micrometer.KafkaRecordSenderContext;
 import org.springframework.kafka.support.micrometer.KafkaTemplateObservationConvention;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableKafka
 public class KafkaConfiguration {
 
-    @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
-    private String bootstrapServers;
+    @Value("${spring.kafka.bootstrap-servers[0]:localhost:29092}")
+    private String server1;
+
+    @Value("${spring.kafka.bootstrap-servers[1]:localhost:29093}")
+    private String server2;
+
+    @Value("${spring.kafka.bootstrap-servers[2]:localhost:29094}")
+    private String server3;
 
     @Value("${spring.kafka.properties.schema.registry.url:http://localhost:8081}")
     private String schemaRegistryUrl;
@@ -43,7 +49,7 @@ public class KafkaConfiguration {
     public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
 
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
 
@@ -63,7 +69,7 @@ public class KafkaConfiguration {
     public ConsumerFactory<String, Object> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
 
-        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
@@ -84,12 +90,12 @@ public class KafkaConfiguration {
         ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.getContainerProperties().setObservationEnabled(true);
-        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+        //factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         return factory;
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
+    public KafkaTemplate<String, ?> kafkaTemplate() {
         KafkaTemplate<String, Object> t = new KafkaTemplate<>(producerFactory());
         t.setObservationEnabled(true);
         t.setObservationConvention(new KafkaTemplateObservationConvention() {
@@ -100,5 +106,13 @@ public class KafkaConfiguration {
             }
         });
         return t;
+    }
+
+    private List<String> getBootstrapServers() {
+        return Arrays.asList(server1, server2, server3)
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
     }
 }

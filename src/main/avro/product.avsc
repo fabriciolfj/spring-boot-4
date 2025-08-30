@@ -1,0 +1,28 @@
+{
+  "type": "record",
+  "name": "Produto",
+  "namespace": "com.study.produto",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long",
+      "doc": "Identificador único do produto"
+    },
+    {
+      "name": "nome",
+      "type": "string",
+      "doc": "Nome do produto"
+    },
+    {
+      "name": "custo",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
+      },
+      "doc": "Custo do produto em formato decimal"
+    }
+  ],
+  "doc": "Esquema para representar um produto"
+}

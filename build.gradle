@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '4.0.0-SNAPSHOT'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
+	id 'org.jetbrains.kotlin.jvm'
 }
 
 group = 'com.github.fabriciolfj'
@@ -23,6 +24,10 @@ sourceSets {
 	main {
 		java {
 			srcDirs += ['build/generated-main-avro-java']
+		}
+
+		resources {
+			srcDirs += ['src/main/avro']
 		}
 	}
 }
@@ -46,7 +51,6 @@ repositories {
 	maven {
 		url 'https://maven.wso2.org/nexus/content/repositories/releases/'
 	}
-
 	maven {
 		url 'https://packages.confluent.io/maven/'
 	}
@@ -69,9 +73,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation "io.confluent:kafka-avro-serializer:${confluentVersion}"
 	implementation "io.confluent:kafka-schema-registry-client:${confluentVersion}"
+	implementation "org.apache.avro:avro:${avroVersion}"
+	implementation "io.confluent:kafka-streams-avro-serde:${confluentVersion}"
 
 	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -79,6 +84,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 tasks.named('test') {
@@ -89,21 +95,30 @@ tasks.named('bootBuildImage') {
 	runImage = 'paketobuildpacks/ubuntu-noble-run-base:latest'
 }
 
-
-// Configuração do plugin Avro
 avro {
 	createSetters = true
 	createOptionalGetters = false
 	gettersReturnOptional = false
 	optionalGettersForNullableFieldsOnly = false
-	fieldVisibility = "PUBLIC_DEPRECATED"
+	fieldVisibility = "PUBLIC"
 	outputCharacterEncoding = "UTF-8"
 	stringType = "String"
+	templateDirectory = null
+	enableDecimalLogicalType = true
 }
 
-// Geração de classes Avro
-generateAvroJava {
+clean {
+	delete 'build/generated-main-avro-java'
+}
+
+tasks.withType(com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask) {
 	source 'src/main/avro'
+	outputDir = file('build/generated-main-avro-java')
 }
 
-compileJava.dependsOn generateAvroJava
+compileJava {
+	dependsOn generateAvroJava
+	source += fileTree(dir: 'build/generated-main-avro-java', include: '**/*.java')
+}
+
+processResources.dependsOn generateAvroJava
