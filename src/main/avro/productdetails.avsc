@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "name": "ProdutoDetalhes",
+  "namespace": "com.study.produtodetalhes",
+  "fields": [
+    {
+      "name": "nome",
+      "type": "string",
+      "doc": "nome do produto"
+    },
+    {
+      "name": "descricao",
+      "type": "string",
+      "doc": "detalhes do produto"
+    }
+  ],
+  "doc": "Esquema para representar detalhes de produto"
+}

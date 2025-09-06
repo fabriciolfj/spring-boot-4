@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "name": "Detalhes",
+  "namespace": "com.study.details",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long",
+      "doc": "Identificador único do produto"
+    },
+    {
+      "name": "descricao",
+      "type": "string",
+      "doc": "Detalhes do produto"
+    }
+  ],
+  "doc": "Esquema para representar detalhes de produto"
+}

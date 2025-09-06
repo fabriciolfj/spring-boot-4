@@ -22,7 +22,7 @@ public class SalesStreamProcessor {
     private KafkaStreams streams;
     private final String STORE_NAME = "sales-aggregates-store";
 
-    @PostConstruct
+    //@PostConstruct
     public void startStreams() {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "sales-analytics");

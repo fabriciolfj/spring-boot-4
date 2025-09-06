@@ -1,7 +1,11 @@
 package com.github.fabriciolfj.study.configuration;
 
+import com.github.fabriciolfj.study.join.ProductDetailsJoin;
+import com.study.details.Detalhes;
+import com.study.details.DetalhesProduto;
 import com.study.preco.TabelaPreco;
 import com.study.produto.Produto;
+import com.study.produtodetalhes.ProdutoDetalhes;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,15 +13,13 @@ import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Produced;
-import org.apache.kafka.streams.kstream.ValueMapper;
+import org.apache.kafka.streams.kstream.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 
 @Slf4j
 @Service
@@ -28,8 +30,14 @@ public class TopologyProductTableConfiguration {
     private String topicProduct;
     @Value("${topic.price}")
     private String topicTable;
+    @Value("${topic.details}")
+    private String topicDetais;
+    @Value("${topic.productDetails}")
+    private String topicProductDetails;
     private final SpecificAvroSerde<Produto> productSerde;
     private final SpecificAvroSerde<TabelaPreco> tableSerde;
+    private final SpecificAvroSerde<Detalhes> detalhesSerde;
+    private final SpecificAvroSerde<ProdutoDetalhes> produtoDetalhesSerde;
     private final StreamsBuilder streamsBuilder;
 
     private static final ValueMapper<Produto, TabelaPreco> tableMapper = product -> {
@@ -53,6 +61,26 @@ public class TopologyProductTableConfiguration {
                 .to(topicTable, Produced.with(stringSerde, tableSerde));
 
         return stream;
+    }
 
+    @Autowired
+    public KStream<String, Detalhes> topoloyDetalhes() {
+        final Serde<String> stringSerde = Serdes.String();
+
+        final KStream<String, Detalhes> detalhesStream = streamsBuilder.stream(topicDetais, Consumed.with(stringSerde, detalhesSerde));
+        final KStream<String, Produto> productStream = streamsBuilder.stream(topicProduct, Consumed.with(stringSerde, productSerde));
+        var joinProductDetails = new ProductDetailsJoin();
+        var thirtyMinuteWindow = JoinWindows.ofTimeDifferenceWithNoGrace(Duration.ofMinutes(30)).after(Duration.ofSeconds(6));
+
+        productStream.join(detalhesStream,
+                joinProductDetails,
+                thirtyMinuteWindow,
+                StreamJoined.with(stringSerde, productSerde, detalhesSerde)
+                        .withName("product-details")
+                        .withStoreName("product-join-details"))
+                .peek((key, value) -> log.info("join value {}, key {}", key, value))
+                .to(topicProductDetails, Produced.with(stringSerde, produtoDetalhesSerde));
+
+        return detalhesStream;
     }
 }

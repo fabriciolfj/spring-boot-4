@@ -65,4 +65,6 @@ spring:
 
 topic:
   product: product-topic
+  details: details
   price: table-price-topic
+  productDetails: product-details

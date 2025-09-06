@@ -3,7 +3,6 @@ package com.github.fabriciolfj.study.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.fabriciolfj.study.entity.SalesAggregator;
 import com.github.fabriciolfj.study.entity.SalesEvent;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -87,7 +86,7 @@ public class StreamsTopologyWindowing {
                 (topic, data) -> {
                     try {
                         ObjectMapper mapper = new ObjectMapper();
-                        mapper.registerModule(new JavaTimeModule());
+                       // mapper.registerModule(new JavaTimeModule());
                         return mapper.writeValueAsBytes(data);
                     } catch (Exception e) {
                         throw new RuntimeException("Error serializing SalesAggregator", e);
@@ -96,7 +95,7 @@ public class StreamsTopologyWindowing {
                 (topic, data) -> {
                     try {
                         ObjectMapper mapper = new ObjectMapper();
-                        mapper.registerModule(new JavaTimeModule());
+                       // mapper.registerModule(new JavaTimeModule());
                         return mapper.readValue(data, SalesAggregator.class);
                     } catch (Exception e) {
                         throw new RuntimeException("Error deserializing SalesAggregator", e);
@@ -110,7 +109,7 @@ public class StreamsTopologyWindowing {
                 (topic, data) -> {
                     try {
                         ObjectMapper mapper = new ObjectMapper();
-                        mapper.registerModule(new JavaTimeModule());
+                       // mapper.registerModule(new JavaTimeModule());
                         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                         return mapper.writeValueAsBytes(data);
                     } catch (Exception e) {
@@ -120,7 +119,7 @@ public class StreamsTopologyWindowing {
                 (topic, data) -> {
                     try {
                         ObjectMapper mapper = new ObjectMapper();
-                        mapper.registerModule(new JavaTimeModule());
+                       // mapper.registerModule(new JavaTimeModule());
                         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                         return mapper.readValue(data, SalesEvent.class);
                     } catch (Exception e) {
