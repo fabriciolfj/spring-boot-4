@@ -1,7 +1,6 @@
 package com.github.fabriciolfj.study.configuration;
 
 import com.study.details.Detalhes;
-import com.study.details.DetalhesProduto;
 import com.study.preco.TabelaPreco;
 import com.study.produto.Produto;
 import com.study.produtodetalhes.ProdutoDetalhes;

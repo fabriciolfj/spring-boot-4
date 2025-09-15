@@ -1,8 +1,6 @@
 package com.github.fabriciolfj.study.service;
 
-import com.github.fabriciolfj.study.dto.ProductDTO;
-import com.study.details.DetalhesProduto;
-import com.study.produto.Produto;
+import com.study.details.Detalhes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +14,10 @@ public class DetailProduceService {
 
     @Value("${topic.details}")
     private String topic;
-    private final KafkaTemplate<String, DetalhesProduto> kafkaTemplate;
+    private final KafkaTemplate<String, Detalhes> kafkaTemplate;
 
     public void send(final String description, final Long id) {
-        var avro = DetalhesProduto.newBuilder()
+        var avro = Detalhes.newBuilder()
                 .setId(id)
                 .setDescricao(description)
                 .build();

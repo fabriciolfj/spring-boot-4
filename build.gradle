@@ -112,8 +112,14 @@ clean {
 }
 
 tasks.withType(com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask) {
-	source 'src/main/avro'
-	outputDir = file('build/generated-main-avro-java')
+	if (name == 'generateAvroJava') {
+		source 'src/main/avro'
+		outputDir = file('build/generated-main-avro-java')
+	}
+	if (name == 'generateTestAvroJava') {
+		source 'src/test/avro'
+		outputDir = file('build/generated-test-avro-java')
+	}
 }
 
 compileJava {
@@ -122,3 +128,4 @@ compileJava {
 }
 
 processResources.dependsOn generateAvroJava
+

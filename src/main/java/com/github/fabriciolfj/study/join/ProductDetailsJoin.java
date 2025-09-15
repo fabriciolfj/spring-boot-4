@@ -1,7 +1,6 @@
 package com.github.fabriciolfj.study.join;
 
 import com.study.details.Detalhes;
-import com.study.details.DetalhesProduto;
 import com.study.produto.Produto;
 import com.study.produtodetalhes.ProdutoDetalhes;
 import org.apache.kafka.streams.kstream.ValueJoiner;

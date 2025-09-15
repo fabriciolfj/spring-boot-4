@@ -2,7 +2,6 @@ package com.github.fabriciolfj.study.configuration;
 
 import com.github.fabriciolfj.study.join.ProductDetailsJoin;
 import com.study.details.Detalhes;
-import com.study.details.DetalhesProduto;
 import com.study.preco.TabelaPreco;
 import com.study.produto.Produto;
 import com.study.produtodetalhes.ProdutoDetalhes;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
