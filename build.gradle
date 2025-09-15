@@ -1,3 +1,5 @@
+import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.0.0-SNAPSHOT'
@@ -111,16 +113,13 @@ clean {
 	delete 'build/generated-main-avro-java'
 }
 
-tasks.withType(com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask) {
-	if (name == 'generateAvroJava') {
-		source 'src/main/avro'
-		outputDir = file('build/generated-main-avro-java')
-	}
-	if (name == 'generateTestAvroJava') {
-		source 'src/test/avro'
-		outputDir = file('build/generated-test-avro-java')
-	}
+tasks.named("generateAvroJava") {
+	source = file("src/main/avro")
+	outputDir = file('build/generated-main-avro-java')
+	stringType = "CharSequence"
+	fieldVisibility = "PUBLIC"
 }
+
 
 compileJava {
 	dependsOn generateAvroJava
