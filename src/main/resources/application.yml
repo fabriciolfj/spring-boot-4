@@ -10,6 +10,23 @@ server:
       min-spare: 5
 
 spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 12
+      password: redis123
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait:  -1ms
+          max-idle: 8
+          min-idle: 2
+        shutdown-timeout: 100ms
+      ssl:
+        enabled: false
+  cache:
+    type: REDIS
   kafka:
     streams:
       application-id: study
@@ -68,3 +85,11 @@ topic:
   details: details
   price: table-price-topic
   productDetails: product-details
+
+cache:
+  user:
+    ttl: 7200
+    prefix: "users:"
+  product:
+    ttl: 1800
+    prefix: "product:"

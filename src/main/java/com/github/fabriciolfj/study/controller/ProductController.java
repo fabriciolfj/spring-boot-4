@@ -5,6 +5,7 @@ import com.github.fabriciolfj.study.service.ProductProduceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -21,5 +22,14 @@ public class ProductController {
         log.info("request recebida {}", dto);
 
         service.send(dto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> findProduct(@PathVariable("id") final Long id) {
+        var product = service.getProduct(id);
+        return product
+                .map(productDTO -> ResponseEntity.accepted().body(productDTO))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+
     }
 }

@@ -3,9 +3,13 @@ package com.github.fabriciolfj.study.service;
 import com.github.fabriciolfj.study.entity.Employee;
 import com.github.fabriciolfj.study.repositories.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
