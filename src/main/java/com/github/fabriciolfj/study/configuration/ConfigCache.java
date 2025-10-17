@@ -1,8 +1,5 @@
 package com.github.fabriciolfj.study.configuration;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.fabriciolfj.study.dto.ProductDTO;
 import com.github.fabriciolfj.study.entity.User;
 import io.lettuce.core.ClientOptions;
@@ -19,8 +16,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.serializer.GenericJackson3JsonRedisSerializer;
-import org.springframework.data.redis.serializer.Jackson3JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import tools.jackson.databind.ObjectMapper;
@@ -97,8 +93,8 @@ public class ConfigCache {
     @Bean(name = "userCacheManager")
     public CacheManager userCacheManager(RedisConnectionFactory connectionFactory,
                                          ObjectMapper redisObjectMapper) {
-        final Jackson3JsonRedisSerializer<User> serializer =
-                new Jackson3JsonRedisSerializer<>(redisObjectMapper, User.class);
+        final JacksonJsonRedisSerializer<User> serializer =
+                new JacksonJsonRedisSerializer<>(redisObjectMapper, User.class);
 
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(userCacheTtl))
@@ -119,8 +115,8 @@ public class ConfigCache {
     @Bean(name = "productCacheManager")
     public CacheManager productCacheManager(RedisConnectionFactory connectionFactory,
                                             ObjectMapper redisObjectMapper) {
-        final Jackson3JsonRedisSerializer<ProductDTO> serializer =
-                new Jackson3JsonRedisSerializer<>(redisObjectMapper, ProductDTO.class);
+        final JacksonJsonRedisSerializer<ProductDTO> serializer =
+                new JacksonJsonRedisSerializer<>(redisObjectMapper, ProductDTO.class);
 
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(productCacheTtl))
