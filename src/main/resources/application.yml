@@ -1,5 +1,5 @@
 server:
-  port: 9090
+  port: 9091
   shutdown: GRACEFUL
   tomcat:
     connection-timeout: 5s
@@ -10,6 +10,9 @@ server:
       min-spare: 5
 
 spring:
+  aot:
+    repositories:
+      enabled: true
   data:
     redis:
       host: localhost
