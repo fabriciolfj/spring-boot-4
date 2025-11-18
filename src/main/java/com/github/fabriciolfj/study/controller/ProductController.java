@@ -4,6 +4,8 @@ import com.github.fabriciolfj.study.dto.ProductDTO;
 import com.github.fabriciolfj.study.service.ProductProduceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +20,14 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody final ProductDTO dto) {
+    public void createProduct(@RequestBody @NonNull final ProductDTO dto) {
         log.info("request recebida {}", dto);
 
         service.send(dto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> findProduct(@PathVariable("id") final Long id) {
+    public ResponseEntity<ProductDTO> findProduct(@PathVariable("id") @Nullable final Long id) {
         var product = service.getProduct(id);
         return product
                 .map(productDTO -> ResponseEntity.accepted().body(productDTO))
