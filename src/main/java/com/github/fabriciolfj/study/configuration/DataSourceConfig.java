@@ -98,12 +98,14 @@ public class DataSourceConfig {
     }
 
     @Bean
-    public JobRepository jobRepository() throws Exception {
+    public JobRepository jobRepository(@Qualifier("batchDataSource") DataSource batchDataSource,
+                                       @Qualifier("batchTransactionManager") PlatformTransactionManager batchTransactionManager,
+                                       DataFieldMaxValueIncrementerFactory incrementerFactory) throws Exception {
         JdbcJobRepositoryFactoryBean factory = new JdbcJobRepositoryFactoryBean();
         factory.setDataSource(batchDataSource());
         factory.setDatabaseType("h2");
-        factory.setTransactionManager(batchTransactionManager());
-        factory.setIncrementerFactory(incrementerFactory());
+        factory.setTransactionManager(batchTransactionManager);
+        factory.setIncrementerFactory(incrementerFactory);
         factory.setIsolationLevelForCreate("ISOLATION_SERIALIZABLE");
         factory.setTablePrefix("BATCH_");
         factory.afterPropertiesSet();
@@ -112,11 +114,11 @@ public class DataSourceConfig {
     }
 
     @Bean
-    public DataFieldMaxValueIncrementerFactory incrementerFactory() {
+    public DataFieldMaxValueIncrementerFactory incrementerFactory(@Qualifier("batchDataSource") DataSource batchDataSource) {
 
         // O H2 é o banco usado para os metadados do Batch
         // O argumento é o tipo de banco (obtido do driver) e o DataSource
-        return new DefaultDataFieldMaxValueIncrementerFactory(batchDataSource());
+        return new DefaultDataFieldMaxValueIncrementerFactory(batchDataSource);
     }
 
     @Bean
