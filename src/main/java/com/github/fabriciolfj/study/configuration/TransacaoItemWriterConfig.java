@@ -50,7 +50,7 @@ public class TransacaoItemWriterConfig {
 
             log.info("Valor total do chunk: R$ {}, Taxa total: R$ {}", valorTotal, taxaTotal);
 
-            // Delega para o JpaItemWriter fazer o trabalho real
+            // Delega para o JpaItemWriter fazer o trabalho real -- aonde salva a entidade na base de dados.
             jpaItemWriter.write(chunk);
 
             log.info("Chunk gravado com sucesso");
