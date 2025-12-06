@@ -2,16 +2,18 @@ package com.github.fabriciolfj.study.configuration;
 
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
+import org.springframework.batch.core.job.DefaultJobKeyGenerator;
+import org.springframework.batch.core.launch.support.JobOperatorFactoryBean;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JdbcJobRepositoryFactoryBean;
+import org.springframework.batch.infrastructure.item.database.support.DataFieldMaxValueIncrementerFactory;
+import org.springframework.batch.infrastructure.item.database.support.DefaultDataFieldMaxValueIncrementerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -33,6 +35,7 @@ import javax.sql.DataSource;
  *    - Seu banco principal
  *    - Configurado no application.yml
  */
+
 @Configuration
 public class DataSourceConfig {
 
@@ -47,6 +50,7 @@ public class DataSourceConfig {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .setName("batch_metadata")  // Nome do banco H2
+                .addScript("org/springframework/batch/core/schema-h2.sql")
                 .build();
     }
 
@@ -73,13 +77,8 @@ public class DataSourceConfig {
                 .build();
     }
 
-    /**
-     * TransactionManager para metadados do Spring Batch.
-     * Usa o batchDataSource (H2).
-     */
     @Bean(name = "batchTransactionManager")
-    public PlatformTransactionManager batchTransactionManager(
-            @Qualifier("batchDataSource") DataSource batchDataSource) {
+    public PlatformTransactionManager batchTransactionManager(@Qualifier("batchDataSource") DataSource batchDataSource) {
         return new DataSourceTransactionManager(batchDataSource);
     }
 
@@ -92,25 +91,39 @@ public class DataSourceConfig {
     @Bean(name = "transactionManager")
     @Primary
     public PlatformTransactionManager businessTransactionManager(
-            @Qualifier("businessDataSource") EntityManagerFactory entityManagerFactory) {
+             EntityManagerFactory entityManagerFactory) {
         var jpaTransactionManager = new JpaTransactionManager();
         jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);
         return jpaTransactionManager;
     }
 
     @Bean
-    public JobRepository jobRepository(
-            @Qualifier("batchDataSource") DataSource batchDataSource,
-            @Qualifier("batchTransactionManager") PlatformTransactionManager batchTxManager)
-            throws Exception {
-
-        var factory = new JdbcJobRepositoryFactoryBean();
-        factory.setDataSource(batchDataSource);
-        factory.setTransactionManager(batchTxManager);
+    public JobRepository jobRepository() throws Exception {
+        JdbcJobRepositoryFactoryBean factory = new JdbcJobRepositoryFactoryBean();
+        factory.setDataSource(batchDataSource());
+        factory.setDatabaseType("h2");
+        factory.setTransactionManager(batchTransactionManager());
+        factory.setIncrementerFactory(incrementerFactory());
         factory.setIsolationLevelForCreate("ISOLATION_SERIALIZABLE");
-        factory.setTablePrefix("BATCH_");  // Prefixo padrão
+        factory.setTablePrefix("BATCH_");
         factory.afterPropertiesSet();
-
+        factory.setJobKeyGenerator(new DefaultJobKeyGenerator());
         return factory.getObject();
     }
+
+    @Bean
+    public DataFieldMaxValueIncrementerFactory incrementerFactory() {
+
+        // O H2 é o banco usado para os metadados do Batch
+        // O argumento é o tipo de banco (obtido do driver) e o DataSource
+        return new DefaultDataFieldMaxValueIncrementerFactory(batchDataSource());
+    }
+
+    @Bean
+    public JobOperatorFactoryBean jobOperator(JobRepository jobRepository) {
+        JobOperatorFactoryBean jobOperatorFactoryBean = new JobOperatorFactoryBean();
+        jobOperatorFactoryBean.setJobRepository(jobRepository);
+        return jobOperatorFactoryBean;
+    }
+
 }

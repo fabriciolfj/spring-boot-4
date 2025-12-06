@@ -70,8 +70,6 @@ spring:
       enabled: true
       path: /h2-console
   batch:
-    jdbc:
-      initialize-schema: never
     job:
       enabled: true # executar automaticamente ao subir
 
