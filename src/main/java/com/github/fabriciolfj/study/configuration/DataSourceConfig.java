@@ -10,6 +10,8 @@ import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -90,7 +92,7 @@ public class DataSourceConfig {
     @Bean(name = "transactionManager")
     @Primary
     public PlatformTransactionManager businessTransactionManager(
-            @Qualifier("dataSource") EntityManagerFactory entityManagerFactory) {
+            @Qualifier("businessDataSource") EntityManagerFactory entityManagerFactory) {
         var jpaTransactionManager = new JpaTransactionManager();
         jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);
         return jpaTransactionManager;
