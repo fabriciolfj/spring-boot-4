@@ -71,7 +71,7 @@ spring:
       path: /h2-console
   batch:
     job:
-      enabled: true # executar automaticamente ao subir
+      enabled: false # executar automaticamente ao subir
 
   application:
     name: spring-four
