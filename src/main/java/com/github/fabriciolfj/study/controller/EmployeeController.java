@@ -21,7 +21,7 @@ public class EmployeeController {
 
     //passar no header o X-API-VERSION: 1
     @PostMapping(version = "1")
-    @Retryable(maxAttempts = 3, delay = 2000, multiplier = 2.0, jitter = 10)
+    @Retryable(maxRetries = 3, delay = 2000, multiplier = 2.0, jitter = 10)
     @ConcurrencyLimit(value = 2)
     public void create(@RequestBody final Employee employee) {
         log.info("request received api version 1");

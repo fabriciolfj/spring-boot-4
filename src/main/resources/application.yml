@@ -10,6 +10,8 @@ server:
       min-spare: 5
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   aot:
     repositories:
       enabled: true
@@ -62,6 +64,17 @@ spring:
         # Configurações de performance
         fetch.min.bytes: 1024
         max.poll.records: 500
+  h2:
+
+    console:
+      enabled: true
+      path: /h2-console
+  batch:
+    jdbc:
+      initialize-schema: never
+    job:
+      enabled: true # executar automaticamente ao subir
+
   application:
     name: spring-four
   threads:
@@ -96,3 +109,9 @@ cache:
   product:
     ttl: 1800
     prefix: "product:"
+
+
+batch:
+  chunk-size: 100
+  input-file: classpath:data/transacoes.csv
+  max-skip-count: 10
