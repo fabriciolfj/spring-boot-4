@@ -32,6 +32,11 @@ spring:
         enabled: false
   cache:
     type: REDIS
+  rabbitmq:
+    addresses: localhost
+    port: 5672
+    username: admin
+    password: admin123
   kafka:
     streams:
       application-id: study
@@ -71,7 +76,7 @@ spring:
       path: /h2-console
   batch:
     job:
-      enabled: false # executar automaticamente ao subir
+      enabled: true # executar automaticamente ao subir
 
   application:
     name: spring-four
@@ -113,3 +118,19 @@ batch:
   chunk-size: 100
   input-file: classpath:data/transacoes.csv
   max-skip-count: 10
+
+
+management:
+  otlp:
+    metrics:
+      export:
+        url: http://localhost:4318/v1/metrics
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/traces
+    logging:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/logs

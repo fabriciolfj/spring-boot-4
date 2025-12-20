@@ -23,7 +23,7 @@ public class DataSourceH2Config {
     public DataSource batchDataSource() {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
-                .setName("batch_metadata")  // Nome do banco H2
+                    .setName("batch_metadata")  // Nome do banco H2
                 .addScript("org/springframework/batch/core/schema-h2.sql")
                 .build();
     }
