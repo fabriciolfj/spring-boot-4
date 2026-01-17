@@ -1,5 +1,5 @@
 server:
-  port: 9091
+  port: 9000
   shutdown: GRACEFUL
   tomcat:
     connection-timeout: 5s
@@ -42,7 +42,7 @@ spring:
       application-id: study
     bootstrap-servers:
       - localhost:29092
-      - localhost:29093
+      - localhost:29095
       - localhost:29094
     properties:
       schema:
@@ -126,11 +126,11 @@ management:
       export:
         url: http://localhost:4318/v1/metrics
   opentelemetry:
-    tracing:
-      export:
-        otlp:
-          endpoint: http://localhost:4318/v1/traces
     logging:
       export:
         otlp:
           endpoint: http://localhost:4318/v1/logs
+    tracing:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/traces
