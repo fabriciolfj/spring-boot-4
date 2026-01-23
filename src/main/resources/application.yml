@@ -10,6 +10,16 @@ server:
       min-spare: 5
 
 spring:
+  cloud:
+    vault:
+      uri: http://localhost:8200
+      token: myroot
+      kv:
+        enabled: true
+        backend: secret
+        application-name: spring-app
+  config:
+    import: vault://
   main:
     allow-bean-definition-overriding: true
   aot:
