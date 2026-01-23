@@ -24,14 +24,12 @@ services:
     networks:
       - vault-network
     entrypoint: /bin/sh
-    command: >
-      -c "
-      sleep 5 &&
-      vault kv put secret/spring-app 
-        database.username=admin 
-        database.password=secret123 
-        api.key=minha-api-key-secreta
-      "  
+    command:
+      - -c
+      - |
+        sleep 5
+        vault kv put secret/spring-app database.username=admin database.password=secret123 api.key=minha-api-key-secreta
+        echo 'Secrets criados com sucesso!'
 
   otel-lgtm:
     image: grafana/otel-lgtm
@@ -239,5 +237,7 @@ volumes:
     driver: local
 
 networks:
+  vault-network:
+    driver: bridge
   kafka-network:
     driver: bridge

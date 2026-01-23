@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: spring-app
+  config:
+    import: vault://
+  cloud:
+    vault:
+      uri: http://localhost:8200
+      authentication: TOKEN
+      token: myroot
+      kv:
+        enabled: true
+        backend: secret
+        application-name: spring-app
