@@ -139,4 +139,4 @@ management:
 
 
 car:
-  host: http:://localhost:9000/api/v1/car
+  host: http://localhost:9000/api/v1/cars
