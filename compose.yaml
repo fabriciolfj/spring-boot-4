@@ -227,6 +227,14 @@ services:
       - broker2
       - broker3
       - schema-registry
+  mockserver:
+    image: mockserver/mockserver:latest
+    ports:
+      - "9000:1080"
+    environment:
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/initializerJson.json
+    volumes:
+      - ./mockserver-config.json:/config/initializerJson.json
 
 volumes:
   rabbitmq_data:

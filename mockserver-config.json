@@ -1,0 +1,19 @@
+// mockserver-config.json
+[
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/api/v1/cars"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "type": "Sedan",
+        "value": "Toyota Corolla"
+      }
+    }
+  }
+]

@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 9091
   shutdown: GRACEFUL
   tomcat:
     connection-timeout: 5s
@@ -136,3 +136,7 @@ management:
       export:
         otlp:
           endpoint: http://localhost:4318/v1/traces
+
+
+car:
+  host: http:://localhost:9000/api/v1/car
