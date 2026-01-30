@@ -9,6 +9,9 @@ server:
       max: 200
       min-spare: 5
 
+app:
+  message: "email"
+
 spring:
   config:
     import: vault://
