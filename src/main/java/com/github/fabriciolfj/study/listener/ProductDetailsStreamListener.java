@@ -1,6 +1,5 @@
 package com.github.fabriciolfj.study.listener;
 
-import com.study.details.Detalhes;
 import com.study.produtodetalhes.ProdutoDetalhes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

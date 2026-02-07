@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "name": "GreetingTest",
+  "namespace": "com.study.greeting",
+  "fields": [
+    {
+      "name": "text",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    }
+  ],
+  "doc": "test retry"
+}

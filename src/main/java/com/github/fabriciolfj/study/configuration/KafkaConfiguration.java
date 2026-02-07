@@ -16,9 +16,13 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.micrometer.KafkaRecordSenderContext;
 import org.springframework.kafka.support.micrometer.KafkaTemplateObservationConvention;
+import org.springframework.util.backoff.BackOff;
+import org.springframework.util.backoff.FixedBackOff;
 
+import java.net.SocketTimeoutException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,6 +48,12 @@ public class KafkaConfiguration {
 
     @Value("${spring.kafka.consumer.auto-offset-reset:earliest}")
     private String autoOffsetReset;
+
+    @Value(value = "${kafka.backoff.interval}")
+    private Long interval;
+
+    @Value(value = "${kafka.backoff.max_failure}")
+    private Long maxAttempts;
 
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
@@ -89,8 +99,10 @@ public class KafkaConfiguration {
     public ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+      //  factory.setCommonErrorHandler(errorHandler());
         factory.getContainerProperties().setObservationEnabled(true);
         //factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
         return factory;
     }
 
@@ -106,6 +118,18 @@ public class KafkaConfiguration {
             }
         });
         return t;
+    }
+
+   // @Bean
+    public DefaultErrorHandler errorHandler() {
+        BackOff fixedBackOff = new FixedBackOff(interval, maxAttempts);
+        DefaultErrorHandler errorHandler = new DefaultErrorHandler((consumerRecord, exception) -> {
+            // logic to execute when all the retry attemps are exhausted
+        }, fixedBackOff);
+
+        errorHandler.addRetryableExceptions(SocketTimeoutException.class);
+        errorHandler.addNotRetryableExceptions(NullPointerException.class);
+        return errorHandler;
     }
 
     private List<String> getBootstrapServers() {

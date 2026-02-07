@@ -52,7 +52,7 @@ spring:
     properties:
       schema:
         registry:
-          url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
+          url: ${SCHEMA_REGISTRY_URL:http://localhost:7081}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
@@ -70,7 +70,7 @@ spring:
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       properties:
         specific.avro.reader: true
-        schema.registry.url: http://localhost:8081
+        schema.registry.url: http://localhost:7081
         # Configurações de performance
         fetch.min.bytes: 1024
         max.poll.records: 500
@@ -109,6 +109,7 @@ topic:
   details: details
   price: table-price-topic
   productDetails: product-details
+  greeting: greeting
 
 cache:
   user:
@@ -140,6 +141,11 @@ management:
         otlp:
           endpoint: http://localhost:4318/v1/traces
 
+
+kafka:
+  backoff:
+    interval: 2000
+    max_failure: 10
 
 car:
   host: http://localhost:9000/api/v1/cars
