@@ -13,6 +13,11 @@ app:
   message: "email"
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 0
   config:
     import: vault://
   main:
