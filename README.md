@@ -80,3 +80,7 @@ Endpoints available on documentation below:
 
 1. [Postman Documentation](https://gb-tech.postman.co/workspace/Ecommerce%2FMarketplace-BR~2b4082fa-04e6-44da-9cbc-1f1537b38409)
 
+
+
+## ollama
+Precisa baixar o modelo para embeddings ollama pull nomic-embed-text

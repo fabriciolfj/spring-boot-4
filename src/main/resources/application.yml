@@ -13,6 +13,16 @@ app:
   message: "email"
 
 spring:
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      embedding:
+        model: nomic-embed-text
+    anthropic:
+      chat:
+        options:
+          model: claude-sonnet-4-5-20250929
+      api-key: ${KEY:123}
   servlet:
     multipart:
       max-file-size: 10MB
