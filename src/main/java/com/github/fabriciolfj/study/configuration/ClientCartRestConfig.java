@@ -10,9 +10,9 @@ import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import org.springframework.web.service.registry.ImportHttpServices;
 
-    @Configuration(proxyBeanMethods = false)
-    @ImportHttpServices(CarClient.class)
-    public class ClientCartRestConfig {
+@Configuration(proxyBeanMethods = false)
+@ImportHttpServices(CarClient.class)
+public class ClientCartRestConfig {
 
     /*private CustomHeaderInterceptor customHeaderInterceptor;
     private String url;
