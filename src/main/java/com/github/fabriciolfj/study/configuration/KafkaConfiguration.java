@@ -4,11 +4,14 @@ package com.github.fabriciolfj.study.configuration;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.micrometer.common.KeyValues;
+import io.micrometer.core.instrument.ImmutableTag;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,6 +58,9 @@ public class KafkaConfiguration {
     @Value(value = "${kafka.backoff.max_failure}")
     private Long maxAttempts;
 
+    @Autowired
+    private MeterRegistry meterRegistry;
+
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
@@ -71,8 +77,15 @@ public class KafkaConfiguration {
         configProps.put(ProducerConfig.LINGER_MS_CONFIG, 5);
         configProps.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
         configProps.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
+        final ProducerFactory<String, Object> pf = new DefaultKafkaProducerFactory<>(configProps);
 
-        return new DefaultKafkaProducerFactory<>(configProps);
+        pf.addListener(
+                new MicrometerProducerListener<>(
+                        meterRegistry,
+                        Collections.singletonList(new ImmutableTag("app-name", "article-comments-app"))
+                )
+        );
+        return pf;
     }
 
     @Bean
@@ -92,7 +105,10 @@ public class KafkaConfiguration {
         configProps.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 500);
         configProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
 
-        return new DefaultKafkaConsumerFactory<>(configProps);
+        final ConsumerFactory<String, Object> consumer = new DefaultKafkaConsumerFactory<>(configProps);
+        consumer.addListener(new MicrometerConsumerListener<>(meterRegistry));
+
+        return consumer;
     }
 
     @Bean
@@ -103,6 +119,7 @@ public class KafkaConfiguration {
         factory.getContainerProperties().setObservationEnabled(true);
         //factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
+        factory.getContainerProperties().setMicrometerTags(Map.of("study-spring", "context-kafka"));
         return factory;
     }
 
@@ -117,6 +134,8 @@ public class KafkaConfiguration {
                         "id", String.valueOf(context.getRecord().key()));
             }
         });
+        t.setMicrometerEnabled(true);
+        t.setMicrometerTagsProvider(record -> Map.of("product", record.key().toString()));
         return t;
     }
 

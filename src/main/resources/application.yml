@@ -1,5 +1,5 @@
 server:
-  port: 9091
+  port: 8080
   shutdown: GRACEFUL
   tomcat:
     connection-timeout: 5s
@@ -142,6 +142,10 @@ batch:
 
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
   otlp:
     metrics:
       export:

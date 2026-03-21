@@ -214,7 +214,7 @@ services:
     image: provectuslabs/kafka-ui:latest
     hostname: kafka-ui
     ports:
-      - "8080:8080"
+      - "9090:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker1:9092,broker2:9095,broker3:9094
