@@ -3,6 +3,7 @@ package com.github.fabriciolfj.study.service;
 import com.github.fabriciolfj.study.projection.PostWithUserRecord;
 import com.github.fabriciolfj.study.repositories.PostRepository;
 import jakarta.transaction.Transactional;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class PostService {
      * automaticamente via dirty checking — sem precisar chamar save().
      */
     @Transactional
-    public PostWithUserRecord findPostWithUser(Long postId) {
+    public @Nullable PostWithUserRecord findPostWithUser(Long postId) {
         return postRepository.findPostWithUser(postId)
                 .orElseThrow(() -> new NoSuchElementException("Post não encontrado: " + postId));
     }
@@ -34,7 +35,7 @@ public class PostService {
      * O update é feito sem chamar save() — o flush() da transação cuida disso.
      */
     @Transactional
-    public PostWithUserRecord updateTitle(Long postId, String newTitle) {
+    public @Nullable PostWithUserRecord updateTitle(Long postId, String newTitle) {
         PostWithUserRecord result = postRepository.findPostWithUser(postId)
                 .orElseThrow(() -> new NoSuchElementException("Post não encontrado: " + postId));
 

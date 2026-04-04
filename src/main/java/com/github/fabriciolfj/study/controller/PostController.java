@@ -2,6 +2,7 @@ package com.github.fabriciolfj.study.controller;
 
 import com.github.fabriciolfj.study.projection.PostWithUserRecord;
 import com.github.fabriciolfj.study.service.PostService;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
