@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.resilience.annotation.EnableResilientMethods;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -18,6 +19,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableResilientMethods
 @Import(MessageServiceRegister.class)
+@EnableJpaRepositories(
+		basePackages = "com.github.fabriciolfj.study.repositories",
+		entityManagerFactoryRef = "entityManagerFactory",
+		transactionManagerRef = "transactionManager"
+)
 public class StudyApplication implements CommandLineRunner {
 
 	@Autowired

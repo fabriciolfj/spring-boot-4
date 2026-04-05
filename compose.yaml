@@ -48,6 +48,15 @@ services:
     ports:
       - "5432:5432"
 
+  postgres_read:
+    image: pgvector/pgvector:pg15   # ← troca aqui
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: mydb
+    ports:
+      - "5433:5432"
+
   zipkin:
     image: 'openzipkin/zipkin:latest'
     ports:

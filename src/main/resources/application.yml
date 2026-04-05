@@ -110,6 +110,16 @@ spring:
     username: root
     password: root
     url: jdbc:postgresql://localhost:5432/postgres
+  datasource-read:
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+  autoconfigure:
+    exclude: >
+      org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,
+      org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
   jpa:
     generate-ddl: false
     hibernate:
