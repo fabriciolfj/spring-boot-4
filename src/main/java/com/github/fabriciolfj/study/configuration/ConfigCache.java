@@ -1,5 +1,6 @@
 package com.github.fabriciolfj.study.configuration;
 
+import com.github.fabriciolfj.study.dto.CarDTO;
 import com.github.fabriciolfj.study.dto.ProductDTO;
 import com.github.fabriciolfj.study.entity.User;
 import io.lettuce.core.ClientOptions;
@@ -99,6 +100,28 @@ public class    ConfigCache {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(userCacheTtl))
                 .prefixCacheNameWith(userCachePrefix)
+                .serializeKeysWith(RedisSerializationContext.SerializationPair
+                        .fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair
+                        .fromSerializer(serializer))
+                .disableCachingNullValues();
+
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(config)
+                .transactionAware()
+                .enableStatistics()
+                .build();
+    }
+
+    @Bean(name = "carCacheManager")
+    public CacheManager carCacheManager(RedisConnectionFactory connectionFactory,
+                                         ObjectMapper redisObjectMapper) {
+        final JacksonJsonRedisSerializer<CarDTO> serializer =
+                new JacksonJsonRedisSerializer<>(redisObjectMapper, CarDTO.class);
+
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofSeconds(5))
+                .prefixCacheNameWith("car")
                 .serializeKeysWith(RedisSerializationContext.SerializationPair
                         .fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair
