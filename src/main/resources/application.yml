@@ -13,6 +13,11 @@ app:
   message: "email"
 
 spring:
+  http:
+    serviceclient:
+      cars:
+        base-url: http://localhost:9000/api/v1/cars
+
   ai:
     ollama:
       base-url: http://localhost:11434
@@ -128,7 +133,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-
 topic:
   product: product-topic
   details: details
@@ -178,3 +182,4 @@ kafka:
 
 car:
   host: http://localhost:9000/api/v1/cars
+

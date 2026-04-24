@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 
-@HttpExchange(url = "${car.host}", accept = "application/json")
+@HttpExchange(accept = "application/json")
 public interface CarClient {
 
     @GetExchange

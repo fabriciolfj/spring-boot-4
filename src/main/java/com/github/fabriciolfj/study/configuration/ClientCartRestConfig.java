@@ -14,7 +14,7 @@ import org.springframework.web.service.registry.ImportHttpServices;
 
 
 @Configuration(proxyBeanMethods = false)
-@ImportHttpServices(CarClient.class)
+@ImportHttpServices(group = "cars", types = {CarClient.class})
 public class ClientCartRestConfig {
 
     @Bean
@@ -22,8 +22,7 @@ public class ClientCartRestConfig {
             ClientHttpRequestFactory factory) {
         return groups -> groups
                 .forEachClient((group, builder) -> builder
-                        .requestFactory(factory)
-                        .baseUrl("${car.hots}"));
+                        .requestFactory(factory));
     }
 
 }
