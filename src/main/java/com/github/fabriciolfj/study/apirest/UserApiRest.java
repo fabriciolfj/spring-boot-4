@@ -19,9 +19,5 @@ public interface UserApiRest {
 
     @GetMapping("/{id}")
     @Operation(summary = "buscar usuario por id")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "ok"),
-            @ApiResponse(responseCode = "404")
-    })
     ResponseEntity<User> getUser(@PathVariable final Long id);
 }
