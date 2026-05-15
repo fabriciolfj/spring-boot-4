@@ -4,6 +4,7 @@ import com.github.fabriciolfj.study.entity.Employee;
 import com.github.fabriciolfj.study.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Fallback;
 import org.springframework.resilience.annotation.ConcurrencyLimit;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.web.bind.annotation.PostMapping;

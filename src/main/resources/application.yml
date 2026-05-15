@@ -17,7 +17,10 @@ spring:
     serviceclient:
       cars:
         base-url: http://localhost:9000/api/v1/cars
-
+  aot:
+    repositories:
+      enabled: true
+    enabled: true
   ai:
     ollama:
       base-url: http://localhost:11434
@@ -37,9 +40,7 @@ spring:
     import: vault://
   main:
     allow-bean-definition-overriding: true
-  aot:
-    repositories:
-      enabled: true
+
   data:
     redis:
       host: localhost
@@ -160,10 +161,14 @@ management:
     web:
       exposure:
         include: '*'
+  tracing:
+    sampling:
+      probability: 1.0
   otlp:
     metrics:
       export:
         url: http://localhost:4318/v1/metrics
+        enabled: true
   opentelemetry:
     logging:
       export:
@@ -183,3 +188,7 @@ kafka:
 car:
   host: http://localhost:9000/api/v1/cars
 
+
+logging:
+  pattern:
+    console: "%d{HH:mm:ss} [%thread] %-5level [%X{traceId},%X{spanId}] %logger{36} - %msg%n"
