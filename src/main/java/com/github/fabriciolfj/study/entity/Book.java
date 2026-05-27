@@ -9,6 +9,8 @@ import org.hibernate.annotations.Array;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.Map;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -27,4 +29,7 @@ public class Book {
     @JdbcTypeCode(SqlTypes.VECTOR)
     @Array(length = 5)
     private float[] embedding;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, String> metadata;
 }

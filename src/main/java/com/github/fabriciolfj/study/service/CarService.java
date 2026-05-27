@@ -19,7 +19,7 @@ public class CarService {
     private final CarClient carClient;
     private final static RandomGenerator RANDOM_GENERATOR = RandomGenerator.getDefault();
 
-    @Cacheable(value = "cars-by-place", cacheManager = "carCacheManager")
+    @Cacheable(value = "cars-by-place", cacheManager = "carCacheManager", sync = true)
     public CarDTO getCar() {
         log.info("executou");
         var result = RANDOM_GENERATOR.nextInt(0, 1000);

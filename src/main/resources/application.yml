@@ -158,9 +158,14 @@ batch:
 
 management:
   endpoints:
+    health:
+      show-details: always
     web:
       exposure:
         include: '*'
+  health:
+    circuitbreakers:
+      enabled: true
   tracing:
     sampling:
       probability: 1.0
@@ -192,3 +197,57 @@ car:
 logging:
   pattern:
     console: "%d{HH:mm:ss} [%thread] %-5level [%X{traceId},%X{spanId}] %logger{36} - %msg%n"
+
+
+pix:
+  retry:
+    max-retries: 5
+    delay: 200
+    jitter: 50
+    max-delay: 3000
+    timeout: 10000
+  concurrency:
+    limit: 10
+
+resilience4j:
+  ratelimiter:
+    configs:
+      default: # config base reutilizável
+        limit-for-period: 100          # permissões por ciclo
+        limit-refresh-period: 1s       # duração do ciclo
+        timeout-duration: 0ms          # 0 = falha imediata se sem permissão
+        subscribe-for-events: true
+        event-consumer-buffer-size: 50
+
+    instances:
+      employeeService: # chamadas ao PSP externo
+        base-config: default
+        limit-for-period: 10           # 10 req/s para o PSP
+        limit-refresh-period: 1s
+        timeout-duration: 500ms        # espera até 500ms por uma permissão
+        register-health-indicator: true
+  circuitbreaker:
+    instances:
+      employeeService:
+        # janela deslizante
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5          # mínimo para avaliar
+
+        # thresholds
+        failure-rate-threshold: 50          # % falhas para abrir
+        slow-call-rate-threshold: 80        # % chamadas lentas para abrir
+        slow-call-duration-threshold: 2000  # ms → define "chamada lenta"
+
+        # transição de estados
+        wait-duration-in-open-state: 30s
+        automatic-transition-from-open-to-half-open-enabled: true
+        permitted-number-of-calls-in-half-open-state: 3
+
+        # exceptions que NÃO contam como falha
+        ignore-exceptions:
+          - com.github.fabriciolfj.study.exceptions.CarNotFoundException
+
+        # métricas / health
+        register-health-indicator: true
+        event-consumer-buffer-size: 10

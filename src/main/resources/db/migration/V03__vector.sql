@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS book (
                                     id     BIGSERIAL PRIMARY KEY,
                                     content TEXT         NOT NULL,
                                     embedding VECTOR(768)  NOT NULL,
+    metadata JSONB,
     year_published VARCHAR(10) NOT NULL
     );
 
