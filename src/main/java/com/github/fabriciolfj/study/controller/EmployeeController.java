@@ -49,13 +49,13 @@ public class EmployeeController {
     }
 
     @Recover
-    public ResponseEntity recover(final Exception ex, final Employee employee) {
+    public ResponseEntity recover(final Employee employee, final Exception ex) {
         log.error(ex.getMessage());
         return ResponseEntity.badRequest().build();
     }
 
     @Recover
-    public ResponseEntity tooManyRequests(final Exception ex, final Employee employee) {
+    public ResponseEntity tooManyRequests(final Employee employee, final Exception ex) {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
     }

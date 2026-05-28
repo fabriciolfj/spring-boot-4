@@ -195,8 +195,12 @@ car:
 
 
 logging:
-  pattern:
-    console: "%d{HH:mm:ss} [%thread] %-5level [%X{traceId},%X{spanId}] %logger{36} - %msg%n"
+  structured:
+    enabled: true
+    format:
+      console: ecs
+  #pattern:
+  #  console: "%d{HH:mm:ss} [%thread] %-5level [%X{traceId},%X{spanId}] %logger{36} - %msg%n"
 
 
 pix:
