@@ -81,7 +81,7 @@ dependencies {
 	//implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 	implementation 'org.hibernate.orm:hibernate-vector:7.1.0.Final'
 	implementation 'org.flywaydb:flyway-database-postgresql'
-	implementation 'org.springframework.amqp:spring-rabbit-stream'
+	//implementation 'org.springframework.amqp:spring-rabbit-stream'
     implementation 'org.springframework.boot:spring-boot-h2console'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -122,14 +122,19 @@ dependencyManagement {
 	}
 }
 
+tasks.named("bootBuildImage") {
+	builder = "paketobuildpacks/builder-noble-java-tiny:latest"
+	runImage = "paketobuildpacks/ubuntu-noble-run-tiny:latest"
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.named('bootBuildImage') {
-	runImage = 'paketobuildpacks/ubuntu-noble-run-base:latest'
+tasks.named("bootBuildImage") {
+	builder = "paketobuildpacks/ubuntu-noble-builder:latest"
+	runImage = "paketobuildpacks/ubuntu-noble-run-tiny:latest"  // obrigatório!
 }
-
 avro {
 	createSetters = true
 	createOptionalGetters = false

@@ -13,6 +13,8 @@ app:
   message: "email"
 
 spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
   http:
     serviceclient:
       cars:
